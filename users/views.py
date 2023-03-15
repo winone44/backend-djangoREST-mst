@@ -8,8 +8,11 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
+
+from .models import Friend, MyUser
 from .utils import get_tokens_for_user
-from .serializers import RegistrationSerializer, PasswordChangeSerializer
+from .serializers import RegistrationSerializer, PasswordChangeSerializer, FriendSerializer
 
 
 # Create your views here.
@@ -55,3 +58,25 @@ class ChangePasswordView(APIView):
         request.user.set_password(serializer.validated_data['new_password'])
         request.user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class FriendList(APIView):
+    """
+    List all persons, or create a new person.
+    """
+    def get(self, request, person_id):
+        try:
+            person = MyUser.objects.get(pk=person_id)
+            friend = Friend.objects.filter(person=person)
+        except MyUser.DoesNotExist:
+            return Response(status=404)
+
+        serializer = FriendSerializer(friend, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = FriendSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -32,7 +32,14 @@ class PasswordChangeSerializer(serializers.Serializer):
             raise serializers.ValidationError({'current_password': 'Does not match'})
         return value
 
+class PersonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MyUser
+        fields = ('id', 'firstName', 'lastName', 'email')
+
 class FriendSerializer(serializers.ModelSerializer):
+    friend = PersonSerializer()
+
     class Meta:
         model = Friend
-        fields = '__all__'
+        fields = ('friend',)

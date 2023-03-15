@@ -103,6 +103,6 @@ class MyUser(AbstractBaseUser):
 
 
 class Friend(models.Model):
-    person = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='friends')
+    person = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='person')
     friend = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='person_friends')
 

@@ -23,3 +23,4 @@ class CommentViewSet(ModelViewSet):
         comment_id = self.request.query_params.get('article')
         # Znajdź komentarze do artykułu i sortu w odwrotnej kolejności
         return Comment.objects.filter(article=comment_id).order_by('-created')
+
