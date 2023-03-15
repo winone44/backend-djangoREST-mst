@@ -50,6 +50,8 @@ class MyUserManager(BaseUserManager):
 
 
 class MyUser(AbstractBaseUser):
+    firstName = models.CharField(max_length=20, default='none')
+    lastName = models.CharField(max_length=20, default='none')
     username = models.CharField(max_length=20)
     email = models.EmailField(
         max_length=255,
@@ -98,3 +100,9 @@ class MyUser(AbstractBaseUser):
     def linkedin_signed_in(self):
 
         return bool(self.linkedin_token) and self.expiry_date > timezone.now()
+
+
+class Friend(models.Model):
+    person = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='friends')
+    friend = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='person_friends')
+
