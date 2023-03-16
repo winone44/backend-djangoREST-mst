@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegistrationView, LoginView, LogoutView, ChangePasswordView, FriendList
+from .views import RegistrationView, LoginView, LogoutView, ChangePasswordView, FriendList, PersonList
 from rest_framework_simplejwt import views as jwt_views
 
 app_name = 'users'
@@ -12,4 +12,5 @@ urlpatterns = [
     path('accounts/token-refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('accounts/friend/', FriendList.as_view(), name='friend'),
     path('accounts/friend/<int:person_id>/', FriendList.as_view(), name='friend-list'),
+    path('accounts/person/', PersonList.as_view(), name='person-list'),
 ]

@@ -12,7 +12,8 @@ from rest_framework.viewsets import ModelViewSet
 
 from .models import Friend, MyUser
 from .utils import get_tokens_for_user
-from .serializers import RegistrationSerializer, PasswordChangeSerializer, ShowFriendSerializer, UpdateFriendSerializer
+from .serializers import RegistrationSerializer, PasswordChangeSerializer, ShowFriendSerializer, UpdateFriendSerializer, \
+    PersonSerializer
 
 
 # Create your views here.
@@ -59,10 +60,15 @@ class ChangePasswordView(APIView):
         request.user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class PersonList(APIView):
+    def get(self, request):
+        person = MyUser.objects.all()
+        serializer = PersonSerializer(person, many=True)
+        return Response(serializer.data)
 
 class FriendList(APIView):
     """
-    List all persons, or create a new person.
+    List all friend, or add a new friend.
     """
     def get(self, request, person_id):
         try:
