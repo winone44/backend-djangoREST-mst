@@ -37,7 +37,13 @@ class PersonSerializer(serializers.ModelSerializer):
         model = MyUser
         fields = ('id', 'firstName', 'lastName', 'email')
 
-class FriendSerializer(serializers.ModelSerializer):
+
+class UpdateFriendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Friend
+        fields = '__all__'
+
+class ShowFriendSerializer(serializers.ModelSerializer):
     friend = PersonSerializer()
 
     class Meta:

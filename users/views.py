@@ -12,7 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from .models import Friend, MyUser
 from .utils import get_tokens_for_user
-from .serializers import RegistrationSerializer, PasswordChangeSerializer, FriendSerializer
+from .serializers import RegistrationSerializer, PasswordChangeSerializer, ShowFriendSerializer, UpdateFriendSerializer
 
 
 # Create your views here.
@@ -71,11 +71,11 @@ class FriendList(APIView):
         except MyUser.DoesNotExist:
             return Response(status=404)
 
-        serializer = FriendSerializer(friend, many=True)
+        serializer = ShowFriendSerializer(friend, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = FriendSerializer(data=request.data)
+        serializer = UpdateFriendSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
