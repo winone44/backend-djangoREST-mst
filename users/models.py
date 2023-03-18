@@ -1,4 +1,4 @@
-import datetime
+from datetime import date
 
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.db import models
@@ -60,6 +60,7 @@ class MyUser(AbstractBaseUser):
     date_of_birth = models.DateField()
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_business = models.BooleanField(default=False)
     credits = models.PositiveIntegerField(default=100)
     linkedin_token = models.TextField(blank=True, default='')
     expiry_date = models.DateTimeField(null=True, blank=True)
@@ -67,6 +68,11 @@ class MyUser(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['date_of_birth']
+
+    def age(self):
+        today = date.today()
+        return today.year - self.date_of_birth.year - (
+                    (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
 
     def __str__(self):
         return self.email
