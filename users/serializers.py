@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import MyUser, Friend
+from .models import MyUser, Friend, ExternalCompany, ExternalContact
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -32,10 +32,24 @@ class PasswordChangeSerializer(serializers.Serializer):
             raise serializers.ValidationError({'current_password': 'Does not match'})
         return value
 
+class ExternalCompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExternalCompany
+        fields = '__all__'
+
+class ExternalContactSerializer(serializers.ModelSerializer):
+    external_company = ExternalCompanySerializer()
+
+    class Meta:
+        model = ExternalContact
+        fields = ('id', 'person', 'external_company')
+
+
 class PersonSerializer(serializers.ModelSerializer):
+    person_ExternalContact = ExternalContactSerializer(many=True)
     class Meta:
         model = MyUser
-        fields = ('id', 'firstName', 'lastName', 'email', 'age', 'is_business')
+        fields = ('id', 'firstName', 'lastName', 'email', 'age', 'is_company', 'profile_picture', 'person_ExternalContact')
 
 
 class UpdateFriendSerializer(serializers.ModelSerializer):

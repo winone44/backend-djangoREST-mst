@@ -40,7 +40,7 @@ class LoginView(APIView):
         if user is not None:
             login(request, user)
             auth_data = get_tokens_for_user(request.user)
-            return Response({'msg': 'Login Success', 'username': user.username, 'localId': user.id, 'expiresIn': timedelta(minutes=5), **auth_data}, status=status.HTTP_200_OK)
+            return Response({'msg': 'Login Success', 'username': user.username, 'localId': user.id, 'expiresIn': timedelta(minutes=30), **auth_data}, status=status.HTTP_200_OK)
         return Response({'msg': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -70,6 +70,15 @@ class FriendList(APIView):
     """
     List all friend, or add a new friend.
     """
+    def delete(self, request, *args, **kwargs):
+        try:
+            person = request.data['person']
+            friend = request.data['friend']
+            friend_obj = Friend.objects.get(person=person, friend=friend)
+            friend_obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
     def get(self, request, person_id):
         try:
             person = MyUser.objects.get(pk=person_id)

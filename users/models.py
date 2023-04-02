@@ -49,6 +49,14 @@ class MyUserManager(BaseUserManager):
         return user
 
 
+class ExternalCompany(models.Model):
+    name = models.CharField(max_length=100)
+    address = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=20)
+    email = models.EmailField(max_length=254)
+    website = models.URLField(max_length=200)
+    notes = models.TextField(blank=True, null=True)
+
 class MyUser(AbstractBaseUser):
     firstName = models.CharField(max_length=20, default='none')
     lastName = models.CharField(max_length=20, default='none')
@@ -60,10 +68,11 @@ class MyUser(AbstractBaseUser):
     date_of_birth = models.DateField()
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    is_business = models.BooleanField(default=False)
+    is_company = models.BooleanField(default=False)
     credits = models.PositiveIntegerField(default=100)
     linkedin_token = models.TextField(blank=True, default='')
     expiry_date = models.DateTimeField(null=True, blank=True)
+    profile_picture = models.TextField(blank=True)
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
@@ -107,8 +116,12 @@ class MyUser(AbstractBaseUser):
 
         return bool(self.linkedin_token) and self.expiry_date > timezone.now()
 
+class ExternalContact(models.Model):
+    person = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='person_ExternalContact')
+    external_company = models.ForeignKey(ExternalCompany, on_delete=models.CASCADE, related_name='external_company')
 
 class Friend(models.Model):
-    person = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='person')
-    friend = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='person_friends')
+    person = models.ForeignKey(MyUser, on_delete=models.DO_NOTHING, related_name='person')
+    friend = models.ForeignKey(MyUser, on_delete=models.DO_NOTHING, related_name='person_friends')
+
 
