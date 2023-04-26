@@ -4,16 +4,16 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from .models import Friend, MyUser
+from .models import Friend, MyUser, Message
 from .utils import get_tokens_for_user
 from .serializers import RegistrationSerializer, PasswordChangeSerializer, ShowFriendSerializer, UpdateFriendSerializer, \
-    PersonSerializer
+    PersonSerializer, MessageSerializer, UpdateMessagesSerializer
 
 
 # Create your views here.
@@ -95,3 +95,72 @@ class FriendList(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class MessageInBoxListCreateView(APIView):
+    serializer_class = MessageSerializer
+
+    def get(self, request):
+        receiver = request.query_params.get('receiver')
+        queryset = Message.objects.filter(receiver=receiver).order_by('-created_at')[:10]
+        serializer = MessageSerializer(queryset, many=True)
+        return Response(serializer.data)
+class MessageListCreateView(APIView):
+    serializer_class = MessageSerializer
+
+    def get(self, request):
+        sender = request.query_params.get('sender')
+        receiver = request.query_params.get('receiver')
+        queryset = Message.objects.filter(sender=sender, receiver=receiver).order_by('-created_at') | Message.objects.filter(sender=receiver, receiver=sender).order_by('-created_at')
+        serializer = MessageSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    # def get(self, request, friend_id):
+    #     print('1')
+    #     user = 3 #user zalogowany id
+    #     print('None')
+    #     queryset = Message.objects.filter(sender=3) | Message.objects.filter(receiver=friend_id)
+    #     queryset += Message.objects.filter(sender=3) | Message.objects.filter(receiver=3)
+    #     serializer = MessageSerializer(queryset, many=True)
+    #     return Response(serializer.data)
+    def post(self, request):
+        serializer = UpdateMessagesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MessageRetrieveUpdateDestroyView(APIView):
+    serializer_class = MessageSerializer
+
+    def get_object(self, pk):
+        try:
+            message = Message.objects.get(pk=pk)
+            # Sprawdzenie, czy użytkownik jest nadawcą lub odbiorcą wiadomości
+            print(self.request.user)
+            if message.sender == 11 or message.receiver == 12:
+                return message
+            else:
+                return None
+        except Message.DoesNotExist:
+            return None
+
+    def put(self, request, pk):
+        message = self.get_object(pk)
+        if message is not None:
+            serializer = MessageSerializer(message, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, pk):
+        message = self.get_object(pk)
+        if message is not None:
+            message.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)

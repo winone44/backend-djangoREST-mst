@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import MyUser, Friend, ExternalCompany, ExternalContact
+from .models import MyUser, Friend, ExternalCompany, ExternalContact, Message
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -63,3 +63,17 @@ class ShowFriendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Friend
         fields = ('friend',)
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    sender = PersonSerializer(read_only=True)
+    receiver = PersonSerializer(read_only=True)
+
+    class Meta:
+        model = Message
+        fields = ['id', 'sender', 'receiver', 'text', 'created_at']
+
+class UpdateMessagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = '__all__'
