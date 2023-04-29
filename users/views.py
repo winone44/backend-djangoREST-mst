@@ -10,10 +10,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from .models import Friend, MyUser, Message
+from .models import Friend, MyUser, Message, Video
 from .utils import get_tokens_for_user
 from .serializers import RegistrationSerializer, PasswordChangeSerializer, ShowFriendSerializer, UpdateFriendSerializer, \
-    PersonSerializer, MessageSerializer, UpdateMessagesSerializer
+    PersonSerializer, MessageSerializer, UpdateMessagesSerializer, AddVideoSerializer, VideosSerializer
 
 
 # Create your views here.
@@ -130,37 +130,53 @@ class MessageListCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MessageRetrieveUpdateDestroyView(APIView):
-    serializer_class = MessageSerializer
+# class MessageRetrieveUpdateDestroyView(APIView):
+#     serializer_class = MessageSerializer
+#
+#     def get_object(self, pk):
+#         try:
+#             message = Message.objects.get(pk=pk)
+#             # Sprawdzenie, czy użytkownik jest nadawcą lub odbiorcą wiadomości
+#             print(self.request.user)
+#             if message.sender == 11 or message.receiver == 12:
+#                 return message
+#             else:
+#                 return None
+#         except Message.DoesNotExist:
+#             return None
+#
+#     def put(self, request, pk):
+#         message = self.get_object(pk)
+#         if message is not None:
+#             serializer = MessageSerializer(message, data=request.data)
+#             if serializer.is_valid():
+#                 serializer.save()
+#                 return Response(serializer.data)
+#             else:
+#                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         else:
+#             return Response(status=status.HTTP_404_NOT_FOUND)
+#
+#     def delete(self, request, pk):
+#         message = self.get_object(pk)
+#         if message is not None:
+#             message.delete()
+#             return Response(status=status.HTTP_204_NO_CONTENT)
+#         else:
+#             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    def get_object(self, pk):
+
+class VideoAddView(APIView):
+    def get(self, request):
         try:
-            message = Message.objects.get(pk=pk)
-            # Sprawdzenie, czy użytkownik jest nadawcą lub odbiorcą wiadomości
-            print(self.request.user)
-            if message.sender == 11 or message.receiver == 12:
-                return message
-            else:
-                return None
-        except Message.DoesNotExist:
-            return None
-
-    def put(self, request, pk):
-        message = self.get_object(pk)
-        if message is not None:
-            serializer = MessageSerializer(message, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    def delete(self, request, pk):
-        message = self.get_object(pk)
-        if message is not None:
-            message.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            queryset = Video.objects.all()
+            serializer = VideosSerializer(queryset, many=True)
+            return Response(serializer.data)
+        except MyUser.DoesNotExist:
+            return Response(status=404)
+    def post(self, request):
+        serializer = AddVideoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

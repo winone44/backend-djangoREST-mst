@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import RegistrationView, LoginView, LogoutView, ChangePasswordView, FriendList, PersonList, \
-    MessageListCreateView, MessageRetrieveUpdateDestroyView, MessageInBoxListCreateView
+    MessageListCreateView, MessageInBoxListCreateView, VideoAddView
 from rest_framework_simplejwt import views as jwt_views
 
 app_name = 'users'
@@ -16,6 +16,8 @@ urlpatterns = [
     path('accounts/person/', PersonList.as_view(), name='person-list'),
     path('messages/', MessageListCreateView.as_view(), name='message-list-create'),
     path('messages/inbox/', MessageInBoxListCreateView.as_view(), name='message-in-box-list-create'),
-    path('message/<int:pk>/', MessageRetrieveUpdateDestroyView.as_view(), name='message-retrieve-update-destroy'),
+    path('video/add/', VideoAddView.as_view(), name='video-add'),
+    path('videos/get/', VideoAddView.as_view(), name='videos-get'),
+    # path('message/<int:pk>/', MessageRetrieveUpdateDestroyView.as_view(), name='message-retrieve-update-destroy'),
 
 ]

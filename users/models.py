@@ -133,3 +133,15 @@ class Message(models.Model):
 
     def __str__(self):
         return f'{self.sender.username} -> {self.receiver.username}'
+
+class Video(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='user_video')
+    title = models.CharField(max_length=100)
+    video = models.TextField()
+    enterprise = models.BooleanField()
+    latitude_deg = models.DecimalField(max_digits=18, decimal_places=14)
+    longitude_deg = models.DecimalField(max_digits=18, decimal_places=14)
+    address = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.title

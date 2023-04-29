@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import MyUser, Friend, ExternalCompany, ExternalContact, Message
+from .models import MyUser, Friend, ExternalCompany, ExternalContact, Message, Video
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -76,4 +76,16 @@ class MessageSerializer(serializers.ModelSerializer):
 class UpdateMessagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
+        fields = '__all__'
+
+class AddVideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Video
+        fields = '__all__'
+
+class VideosSerializer(serializers.ModelSerializer):
+    user = PersonSerializer(read_only=True)
+
+    class Meta:
+        model = Video
         fields = '__all__'
