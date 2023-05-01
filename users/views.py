@@ -66,6 +66,14 @@ class PersonList(APIView):
         serializer = PersonSerializer(person, many=True)
         return Response(serializer.data)
 
+class PersonInfo(APIView):
+    def get(self, request, person_id):
+        try:
+            person = MyUser.objects.get(pk=person_id)
+        except MyUser.DoesNotExist:
+            return Response(status=404)
+        serializer = PersonSerializer(person)
+        return Response(serializer.data)
 class FriendList(APIView):
     """
     List all friend, or add a new friend.
