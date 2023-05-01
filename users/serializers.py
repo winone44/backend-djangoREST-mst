@@ -47,10 +47,15 @@ class ExternalContactSerializer(serializers.ModelSerializer):
 
 class PersonSerializer(serializers.ModelSerializer):
     person_ExternalContact = ExternalContactSerializer(many=True)
+    number_of_following = serializers.SerializerMethodField()
+    number_of_followers = serializers.SerializerMethodField()
     class Meta:
         model = MyUser
-        fields = ('id', 'firstName', 'lastName', 'email', 'age', 'is_company', 'profile_picture', 'person_ExternalContact')
-
+        fields = ('id', 'firstName', 'lastName', 'email', 'age', 'is_company', 'profile_picture', 'person_ExternalContact', 'number_of_following', 'number_of_followers')
+    def get_number_of_following(self, obj):  # Metoda dostaje pojedynczy obiekt który jest serializowany (prefix get_)
+        return obj.person.all().count()
+    def get_number_of_followers(self, obj):  # Metoda dostaje pojedynczy obiekt który jest serializowany (prefix get_)
+        return obj.person_friends.all().count()
 
 class UpdateFriendSerializer(serializers.ModelSerializer):
     class Meta:
@@ -63,7 +68,6 @@ class ShowFriendSerializer(serializers.ModelSerializer):
     class Meta:
         model = Friend
         fields = ('friend',)
-
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = PersonSerializer(read_only=True)
