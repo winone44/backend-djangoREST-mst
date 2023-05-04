@@ -7,7 +7,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyUser
-        fields = ['username', 'email', 'date_of_birth', 'password', 'password2']
+        fields = ['firstName','lastName','username', 'email', 'date_of_birth', 'password', 'password2']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -51,7 +51,7 @@ class PersonSerializer(serializers.ModelSerializer):
     number_of_followers = serializers.SerializerMethodField()
     class Meta:
         model = MyUser
-        fields = ('id', 'firstName', 'lastName', 'email', 'age', 'is_company', 'profile_picture', 'person_ExternalContact', 'number_of_following', 'number_of_followers')
+        fields = ('id', 'firstName', 'lastName', 'username', 'email', 'age', 'is_company', 'profile_picture', 'person_ExternalContact', 'number_of_following', 'number_of_followers')
     def get_number_of_following(self, obj):  # Metoda dostaje pojedynczy obiekt który jest serializowany (prefix get_)
         return obj.person.all().count()
     def get_number_of_followers(self, obj):  # Metoda dostaje pojedynczy obiekt który jest serializowany (prefix get_)

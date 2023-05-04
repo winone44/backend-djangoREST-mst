@@ -142,6 +142,7 @@ class Video(models.Model):
     latitude_deg = models.DecimalField(max_digits=18, decimal_places=14)
     longitude_deg = models.DecimalField(max_digits=18, decimal_places=14)
     address = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
