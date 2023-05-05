@@ -58,9 +58,9 @@ class ExternalCompany(models.Model):
     notes = models.TextField(blank=True, null=True)
 
 class MyUser(AbstractBaseUser):
-    firstName = models.CharField(max_length=20, default='none')
-    lastName = models.CharField(max_length=20, default='none')
-    username = models.CharField(max_length=20)
+    firstName = models.CharField(max_length=20)
+    lastName = models.CharField(max_length=20)
+    username = models.CharField(max_length=20, unique=True,)
     email = models.EmailField(
         max_length=255,
         unique=True,
@@ -146,3 +146,10 @@ class Video(models.Model):
 
     def __str__(self):
         return self.title
+
+class Like(models.Model):
+    person = models.ForeignKey(MyUser, on_delete=models.DO_NOTHING, related_name='person_who_liked')
+    video = models.ForeignKey(Video, on_delete=models.DO_NOTHING, related_name='liked_video')
+
+    class Meta:
+        unique_together = ('person', 'video')

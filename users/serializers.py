@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import MyUser, Friend, ExternalCompany, ExternalContact, Message, Video
+from .models import MyUser, Friend, ExternalCompany, ExternalContact, Message, Video, Like
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -13,7 +13,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         }
 
     def save(self):
-        user = MyUser(username=self.validated_data['username'], email=self.validated_data['email'], date_of_birth=self.validated_data['date_of_birth'])
+        user = MyUser(firstName=self.validated_data['firstName'], lastName=self.validated_data['lastName'], username=self.validated_data['username'], email=self.validated_data['email'], date_of_birth=self.validated_data['date_of_birth'])
         password = self.validated_data['password']
         password2 = self.validated_data['password2']
         if password != password2:
@@ -89,7 +89,19 @@ class AddVideoSerializer(serializers.ModelSerializer):
 
 class VideosSerializer(serializers.ModelSerializer):
     user = PersonSerializer(read_only=True)
-
+    number_of_likes = serializers.SerializerMethodField()
+    user_has_liked = serializers.SerializerMethodField()
     class Meta:
         model = Video
+        fields = '__all__'
+
+    def get_number_of_likes(self, obj):  # Metoda dostaje pojedynczy obiekt który jest serializowany (prefix get_)
+        return obj.liked_video.all().count()
+    def get_user_has_liked(self, obj):
+        user_id = self.context['user_id']
+        return Like.objects.filter(person=user_id, video=obj).exists()
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
         fields = '__all__'
