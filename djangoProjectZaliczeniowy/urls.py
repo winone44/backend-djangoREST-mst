@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from rest_framework.routers import DefaultRouter
-from myapp.views import ArticleViewSet, CommentViewSet
 from django.urls import path, include
 
 #
@@ -24,8 +23,6 @@ from django.urls import path, include
 
 
 router = DefaultRouter()  # Tworzymy router
-router.register('api/articles', ArticleViewSet)  # Rejestrujemy klasę widoku pod zasobem. Potrzeba podać prefix
-router.register('api/comments', CommentViewSet)  # Rejestrujemy klasę widoku pod zasobem. Potrzeba podać prefix
 
 urlpatterns = router.urls  # urlpatterns - plik reprezentujący zasoby musi zawierać zmienna która posiada lisę zasobów
 
