@@ -15,7 +15,7 @@ from .utils import get_tokens_for_user
 from .serializers import RegistrationSerializer, PasswordChangeSerializer, ShowFriendSerializer, UpdateFriendSerializer, \
     PersonSerializer, MessageSerializer, UpdateMessagesSerializer, AddVideoSerializer, VideosSerializer, LikeSerializer
 
-
+from django.conf import settings
 # Create your views here.
 
 
@@ -41,7 +41,7 @@ class LoginView(APIView):
         if user is not None:
             login(request, user)
             auth_data = get_tokens_for_user(request.user)
-            return Response({'msg': 'Login Success', 'username': user.username, 'localId': user.id, 'expiresIn': timedelta(minutes=30), **auth_data}, status=status.HTTP_200_OK)
+            return Response({'msg': 'Login Success', 'username': user.username, 'localId': user.id, 'access_token_lifetime':settings.ACCESS_TOKEN_LIFETIME, 'refresh_token_lifetime': settings.REFRESH_TOKEN_LIFETIME, **auth_data}, status=status.HTTP_200_OK)
         return Response({'msg': 'Invalid Credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
