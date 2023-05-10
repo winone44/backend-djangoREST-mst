@@ -21,6 +21,7 @@ urlpatterns = [
     path('video/add/', VideoView.as_view(), name='video-add'),
     path('videos/get/', VideoView.as_view(), name='videos-get'),
     path('videos/person/get/', PersonVideoView.as_view(), name='videos-get'),
+    path('videos/person/del/', PersonVideoView.as_view(), name='videos-del'),
     # path('message/<int:pk>/', MessageRetrieveUpdateDestroyView.as_view(), name='message-retrieve-update-destroy'),
 
 ]

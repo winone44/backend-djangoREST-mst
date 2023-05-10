@@ -148,8 +148,8 @@ class Video(models.Model):
         return self.title
 
 class Like(models.Model):
-    person = models.ForeignKey(MyUser, on_delete=models.DO_NOTHING, related_name='person_who_liked')
-    video = models.ForeignKey(Video, on_delete=models.DO_NOTHING, related_name='liked_video')
+    person = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='person_who_liked')
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='liked_video')
 
     class Meta:
         unique_together = ('person', 'video')

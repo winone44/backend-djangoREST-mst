@@ -156,6 +156,14 @@ class PersonVideoView(APIView):
         except MyUser.DoesNotExist:
             return Response(status=404)
 
+    def delete(self, request, *args, **kwargs):
+        try:
+            video_id = request.data['video_id']
+            video_obj = Video.objects.get(pk=video_id)
+            video_obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except MyUser.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 class VideoLike(APIView):
 
     def delete(self, request, *args, **kwargs):
