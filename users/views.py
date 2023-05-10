@@ -134,7 +134,7 @@ class VideoView(APIView):
     def get(self, request):
         try:
             user_id = request.query_params.get('user_id')
-            queryset = Video.objects.all()
+            queryset = Video.objects.all().order_by('?')
             serializer = VideosSerializer(queryset, many=True, context={'user_id': user_id})
             return Response(serializer.data)
         except MyUser.DoesNotExist:
@@ -146,6 +146,15 @@ class VideoView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class PersonVideoView(APIView):
+    def get(self, request):
+        try:
+            user_id = request.query_params.get('user_id')
+            queryset = Video.objects.filter(user=user_id)
+            serializer = VideosSerializer(queryset, many=True, context={'user_id': user_id})
+            return Response(serializer.data)
+        except MyUser.DoesNotExist:
+            return Response(status=404)
 
 class VideoLike(APIView):
 
