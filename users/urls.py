@@ -15,6 +15,7 @@ urlpatterns = [
     path('accounts/friend/<int:person_id>/', FriendList.as_view(), name='friend-list'),
     path('accounts/person/', PersonList.as_view(), name='person-list'),
     path('accounts/person/<int:person_id>/', PersonInfo.as_view(), name='person-info'),
+    path('accounts/person/<int:person_id>/patch/', PersonInfo.as_view(), name='person-update'),
     path('messages/', MessageListCreateView.as_view(), name='message-list-create'),
     path('messages/inbox/', MessageInBoxListCreateView.as_view(), name='message-in-box-list-create'),
     path('video/like/', VideoLike.as_view(), name='video-like'),

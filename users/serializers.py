@@ -49,13 +49,16 @@ class PersonSerializer(serializers.ModelSerializer):
     person_ExternalContact = ExternalContactSerializer(many=True)
     number_of_following = serializers.SerializerMethodField()
     number_of_followers = serializers.SerializerMethodField()
+    number_of_likes = serializers.SerializerMethodField()
     class Meta:
         model = MyUser
-        fields = ('id', 'firstName', 'lastName', 'username', 'email', 'age', 'is_company', 'profile_picture', 'person_ExternalContact', 'number_of_following', 'number_of_followers')
+        fields = ('id', 'firstName', 'lastName', 'username', 'email', 'age', 'is_company', 'profile_picture', 'person_ExternalContact', 'number_of_following', 'number_of_followers', 'number_of_likes', 'description')
     def get_number_of_following(self, obj):  # Metoda dostaje pojedynczy obiekt który jest serializowany (prefix get_)
         return obj.person.all().count()
     def get_number_of_followers(self, obj):  # Metoda dostaje pojedynczy obiekt który jest serializowany (prefix get_)
         return obj.person_friends.all().count()
+    def get_number_of_likes(self, obj):
+        return obj.get_likes_count()
 
 class UpdateFriendSerializer(serializers.ModelSerializer):
     class Meta:

@@ -73,6 +73,7 @@ class MyUser(AbstractBaseUser):
     linkedin_token = models.TextField(blank=True, default='')
     expiry_date = models.DateTimeField(null=True, blank=True)
     profile_picture = models.TextField(blank=True)
+    description = models.TextField(blank=True)
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
@@ -115,6 +116,9 @@ class MyUser(AbstractBaseUser):
     def linkedin_signed_in(self):
 
         return bool(self.linkedin_token) and self.expiry_date > timezone.now()
+
+    def get_likes_count(self):
+        return Like.objects.filter(video__user=self).count()
 
 class ExternalContact(models.Model):
     person = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='person_ExternalContact')

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-cr-_2%tz_^-o2i#4!!^#54xtvww3zb(7_gcn(bp9*(zg*6rbgr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.182']
+ALLOWED_HOSTS = ['192.168.0.182', '192.168.1.26']
 ACCESS_TOKEN_LIFETIME = timedelta(minutes=50)
 REFRESH_TOKEN_LIFETIME = timedelta(days=1)
 
