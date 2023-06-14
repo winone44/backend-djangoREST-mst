@@ -20,6 +20,7 @@ from django.conf import settings
 
 
 class RegistrationView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid():
